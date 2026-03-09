@@ -7,6 +7,8 @@ linters:
   settings:
     custom:
       loglint:
+        type: "module"
+        description: checks log messages for style and security rules
         settings:
           # Отключить отдельные правила
           disable_lowercase: false

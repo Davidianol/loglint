@@ -43,16 +43,15 @@ vet-run: build
 
 lint-install:
 	@if ! command -v $(GOLANGCI) > /dev/null 2>&1; then \
-		echo ">>> Устанавливаем golangci-lint..."; \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+		echo ">>> Устанавливаем golangci-lint v2.11.2..."; \
+        go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.2; \
 	else \
 		echo ">>> golangci-lint: $$(golangci-lint version)"; \
 	fi
 
 lint-build-plugin: lint-install
 	@echo ">>> Собираем custom golangci-lint (best effort)..."
-	$(GOLANGCI) custom -v || \
-		( echo ">>> custom build не удался — используй make vet-run"; exit 0 )
+	$(GOLANGCI) custom -v
 
 lint-run-plugin: lint-build-plugin
 	@if [ -x "$(CUSTOM_GCL)" ]; then \

@@ -31,6 +31,8 @@ linters:
   settings:
     custom:
       loglint:
+        type: "module"
+        description: checks log messages for style and security rules
         settings:
           # Отключить отдельные правила
           disable_lowercase: false
@@ -38,19 +40,20 @@ linters:
           disable_special_chars: false
           disable_sensitive: false
 
-          # Дополнительные запрещённые символы (добавляются к стандартным: !?@#$%^&*:;)
+          # Кастомные запрещённые символы (добавляются к стандартным)
           extra_forbidden_chars: "-+"
 
-          # Дополнительные запрещённые паттерны
+          # Кастомные запрещённые паттерны
           extra_forbidden_patterns:
             - "TODO"
             - "FIXME"
 
-          # Дополнительные ключевые слова для проверки чувствительных данных
+          # Кастомные чувствительные слова
           extra_sensitive_keywords:
             - "internal_key"
             - "master_password"
             - "db_pass"
+
 ```
 
 > При запуске через `go vet -vettool=./loglint` конфигурация не применяется -
@@ -72,10 +75,12 @@ go vet -vettool=./loglint ./...
 Добавь в `.custom-gcl.yml` своего проекта:
 
 ```yaml
-version: v1.64.6
+version: v2.11.2
+name: custom-gcl
+destination: .
 plugins:
   - module: github.com/Davidianol/loglint
-    path: github.com/Davidianol/loglint@latest
+    path: .
 ```
 
 Добавь в `.golangci.yml`:
