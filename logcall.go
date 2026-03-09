@@ -23,13 +23,6 @@ var supportedLogPackages = map[string]map[string]bool{
 	},
 }
 
-// contextMethods принимают context.Context первым аргументом,
-// поэтому сообщение находится на позиции 1
-var contextMethods = map[string]bool{
-	"DebugContext": true, "InfoContext": true,
-	"WarnContext": true, "ErrorContext": true,
-}
-
 // msgArgIndex возвращает индекс аргумента с сообщением
 func msgArgIndex(methodName string) int {
 	switch methodName {
