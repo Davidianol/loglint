@@ -1,0 +1,29 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - loglint
+  settings:
+    custom:
+      loglint:
+        settings:
+          # Отключить отдельные правила
+          disable_lowercase: false
+          disable_english: false
+          disable_special_chars: false
+          disable_sensitive: false
+
+          # Кастомные запрещённые символы (добавляются к стандартным)
+          extra_forbidden_chars: "-+"
+
+          # Кастомные запрещённые паттерны
+          extra_forbidden_patterns:
+            - "TODO"
+            - "FIXME"
+
+          # Кастомные чувствительные слова
+          extra_sensitive_keywords:
+            - "internal_key"
+            - "master_password"
+            - "db_pass"
