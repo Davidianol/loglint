@@ -14,5 +14,6 @@ func TestAnalyzer(t *testing.T) {
 		"english",
 		"specialchars",
 		"sensitive",
+		"ok",
 	)
 }

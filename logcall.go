@@ -30,6 +30,18 @@ var contextMethods = map[string]bool{
 	"WarnContext": true, "ErrorContext": true,
 }
 
+// msgArgIndex возвращает индекс аргумента с сообщением
+func msgArgIndex(methodName string) int {
+	switch methodName {
+	case "Log", "LogAttrs":
+		return 2 // slog.Log(ctx, level, "msg", ...)
+	case "DebugContext", "InfoContext", "WarnContext", "ErrorContext":
+		return 1 // slog.InfoContext(ctx, "msg", ...)
+	default:
+		return 0 // slog.Info("msg", ...), logger.Info("msg", ...)
+	}
+}
+
 func extractLogMessage(pass *analysis.Pass, call *ast.CallExpr) (string, token.Pos, bool) {
 	sel, ok := call.Fun.(*ast.SelectorExpr)
 	if !ok {
@@ -41,14 +53,10 @@ func extractLogMessage(pass *analysis.Pass, call *ast.CallExpr) (string, token.P
 		return "", 0, false
 	}
 
-	msgIdx := 0
-	if contextMethods[methodName] {
-		msgIdx = 1
-	}
+	msgIdx := msgArgIndex(methodName)
 	if len(call.Args) <= msgIdx {
 		return "", 0, false
 	}
-
 	return extractStringArg(call.Args[msgIdx])
 }
 
