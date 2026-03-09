@@ -19,21 +19,41 @@ var sensitiveKeywords = []string{
 var sensitivePatterns []*regexp.Regexp
 
 func init() {
-	for _, kw := range sensitiveKeywords {
-		// \b — граница слова: "auth" не совпадет, например, с "authenticated"
-		sensitivePatterns = append(sensitivePatterns,
+	sensitivePatterns = compilePatterns(sensitiveKeywords)
+}
+
+func compilePatterns(keywords []string) []*regexp.Regexp {
+	patterns := make([]*regexp.Regexp, 0, len(keywords))
+	for _, kw := range keywords {
+		patterns = append(patterns,
 			regexp.MustCompile(`(?i)\b`+regexp.QuoteMeta(kw)+`\b`),
 		)
 	}
+	return patterns
 }
 
+// CheckSensitive - оригинальная функция, используется в unit-тестах
 func CheckSensitive(pass *analysis.Pass, pos token.Pos, msg string) {
+	CheckSensitiveConfig(pass, pos, msg, nil)
+}
+
+// CheckSensitiveConfig - с поддержкой кастомных ключевых слов из конфига
+func CheckSensitiveConfig(pass *analysis.Pass, pos token.Pos, msg string, extraKeywords []string) {
 	lower := strings.ToLower(msg)
-	for i, pattern := range sensitivePatterns {
+
+	allKeywords := sensitiveKeywords
+	allPatterns := sensitivePatterns
+
+	if len(extraKeywords) > 0 {
+		allKeywords = append(allKeywords, extraKeywords...)
+		allPatterns = append(allPatterns, compilePatterns(extraKeywords)...)
+	}
+
+	for i, pattern := range allPatterns {
 		if pattern.MatchString(lower) {
 			pass.Reportf(pos,
 				"log message may contain sensitive data (keyword %q found): %q",
-				sensitiveKeywords[i], msg,
+				allKeywords[i], msg,
 			)
 			return
 		}

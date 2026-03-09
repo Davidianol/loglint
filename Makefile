@@ -20,7 +20,7 @@ ZAP_DIR  := /tmp/loglint-check/jaeger
 
 test-unit:
 	@echo ">>> Unit-тесты правил"
-	go test -v ./internal/rules/...
+	go test -v ./internal/rules/... ./internal/config/...
 
 test-integration:
 	@echo ">>> Интеграционные тесты (analysistest)"
